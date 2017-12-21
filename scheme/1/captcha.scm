@@ -2,9 +2,7 @@
 
 (define char_to_number
  (lambda (c)
-  (string->number (string c))
- )
-)
+  (string->number (string c))))
 
 (define sum_pairs
  (lambda (input)
@@ -20,10 +18,7 @@
  (lambda (input)
   (if (equal? (substring input 0 1) (substring input (- (string-length input) 1)))
    (+ (string->number (substring input 0 1)) (sum_pairs (string->list input)))
-   (sum_pairs (string->list input))
-  )
- )
-)
+   (sum_pairs (string->list input)))))
 
 (define matched_items
  (lambda (l1 l2)
