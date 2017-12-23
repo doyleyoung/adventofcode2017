@@ -1,8 +1,12 @@
 #!/usr/bin/env perl
 
 use Modern::Perl;
+use Algorithm::Permute;
 
-say manhattanDistance(rotateAroundOrigin(368078), [0,0]);
+my $input = 368078;
+
+say manhattanDistance(rotateAroundOrigin($input), [0,0]);
+say sumAroundOrigin($input);
 
 sub manhattanDistance {
     my ($p, $q) = @_;
@@ -80,16 +84,18 @@ sub sumAroundOrigin {
 
     my $location = [ 0, 0 ];
 
-    #    say $num;
-    for (my $i = 1; $i < $num; $i++) {
+    for (my $i = 1; $i < $testVal; $i++) {
         if ((@$location[0] == 0 && @$location[1] == 0)
           || ($x_max > @$location[0]
           && (-1 * ($y_max - 1)) == @$location[1]
           && $x_direction > 0
           && $y_direction < 0)) {
+            my $locationValue = setGridValue($location, \%grid_values);
+            if($locationValue > $testVal) {
+                return $locationValue;
+            }
             #            say "right";
             @$location[0] += 1;
-            setGridValue($location, \$grid_values);
 
             if ($x_max == @$location[0]) {
                 $y_direction = 1;
@@ -98,6 +104,10 @@ sub sumAroundOrigin {
           && $y_max > @$location[1]
           && $x_direction > 0
           && $y_direction > 0) {
+            my $locationValue = setGridValue($location, \%grid_values);
+            if($locationValue > $testVal) {
+                return $locationValue;
+            }
             #            say "up";
             @$location[1] += 1;
 
@@ -108,6 +118,10 @@ sub sumAroundOrigin {
           && $y_max == @$location[1]
           && $x_direction < 0
           && $y_direction > 0) {
+            my $locationValue = setGridValue($location, \%grid_values);
+            if($locationValue > $testVal) {
+                return $locationValue;
+            }
             #            say "left";
             @$location[0] -= 1;
 
@@ -119,6 +133,10 @@ sub sumAroundOrigin {
           && (-1 * $y_max) < @$location[1]
           && $x_direction < 0
           && $y_direction < 0) {
+            my $locationValue = setGridValue($location, \%grid_values);
+            if($locationValue > $testVal) {
+                return $locationValue;
+            }
             #            say "down";
             @$location[1] -= 1;
 
@@ -127,6 +145,8 @@ sub sumAroundOrigin {
                 $x_direction = 1;
             }
         }
+
+
     }
 
     return $location;
@@ -134,6 +154,31 @@ sub sumAroundOrigin {
 
 sub setGridValue {
     my ($location, $gridValues) = @_;
+    my $permutations = Algorithm::Permute->new([-1, 0, 1], 2);
+    my $value = 0;
 
+#    say "" . (join ",", @$location);
 
+    while(my @combo = $permutations->next()) {
+#        say "checking: " . (@$location[0] + $combo[0]) . " " . (@$location[1] + $combo[1]);
+        if(exists($gridValues->{@$location[0] + $combo[0]}{@$location[1] + $combo[1]})) {
+            $value += $gridValues->{@$location[0] + $combo[0]}{@$location[1] + $combo[1]};
+        }
+    }
+
+    # have to do 1,1 and -1,-1, too ^ algorithm only makes exclusive pairs
+    if(exists($gridValues->{@$location[0] + 1}{@$location[1] + 1})) {
+        $value += $gridValues->{@$location[0] + 1}{@$location[1] + 1};
+    }
+
+    if(exists($gridValues->{@$location[0] - 1}{@$location[1] - 1})) {
+        $value += $gridValues->{@$location[0] - 1}{@$location[1] - 1};
+    }
+
+    $value ||= 1;
+
+    $gridValues->{@$location[0]}{@$location[1]} = $value;
+#    say "" . (join ",", @$location) . " " . $value;
+
+    return $value;
 }
