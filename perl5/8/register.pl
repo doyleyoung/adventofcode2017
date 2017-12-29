@@ -4,7 +4,7 @@ use Modern::Perl;
 use List::Util qw{max};
 no warnings 'experimental::smartmatch';
 
-use Data::Dumper;
+#use Data::Dumper;
 
 my $inpath = "../../resources/8/input.txt";
 #my $inpath = "../../resources/8/test_input.txt";
