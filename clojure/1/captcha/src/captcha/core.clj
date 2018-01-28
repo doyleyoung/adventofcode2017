@@ -2,7 +2,7 @@
   (:gen-class))
 
 (defn parse-int [s]
-    (Integer. (re-find  #"\d+" s )))
+  (Integer. (re-find  #"\d+" s)))
 
 (defn seq_captcha [input]
   (let [sum (reduce + (map #(parse-int (get %1 0)) (re-seq #"(\d)(?=\1)" input)))]
@@ -20,7 +20,7 @@
 (defn half_captcha [input]
   (let [half (/ (count input) 2)]
     (* 2 (reduce +
-           (map #(parse-int (str %1)) (matched_items (subs input 0 half) (subs input half) '()))))))
+                 (map #(parse-int (str %1)) (matched_items (subs input 0 half) (subs input half) '()))))))
 
 (defn -main
   "Pass your captcha digits"
